@@ -1,6 +1,8 @@
 # EVE MCP Server
 
-A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for [EVE Online's ESI API](https://esi.evetech.net/ui/), built in C# with .NET 8.
+[![CI](https://github.com/pfh59/eve-mcp-server/actions/workflows/ci.yml/badge.svg)](https://github.com/pfh59/eve-mcp-server/actions/workflows/ci.yml)
+
+A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for [EVE Online's ESI API](https://esi.evetech.net/ui/), built in C# with .NET 10.
 
 This server exposes **52 MCP tools** covering the public ESI endpoints, enabling AI assistants (Claude, Copilot, etc.) to query EVE Online data — regions, market orders, killmails, sovereignty, industry, and more.
 
@@ -55,7 +57,7 @@ eve-mcp-server/
 
 ## Prerequisites
 
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) or later
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) or later
 
 ## Build & Run
 
@@ -93,7 +95,7 @@ Add to your MCP settings (`claude_desktop_config.json` or VS Code MCP settings):
 {
   "mcpServers": {
     "eve-online": {
-      "command": "/path/to/eve-mcp-server/eve-mcp-server/bin/Debug/net8.0/eve-mcp-server"
+      "command": "/path/to/eve-mcp-server/eve-mcp-server/bin/Debug/net10.0/eve-mcp-server"
     }
   }
 }

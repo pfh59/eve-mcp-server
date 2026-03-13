@@ -43,4 +43,12 @@ public class SearchToolsTests
         Assert.Contains("Jita", result);
         Assert.Contains("Tritanium", result);
     }
+
+    [Fact]
+    public async Task ResolveIdsToNames_InvalidId_ReturnsErrorMessage()
+    {
+        var result = await SearchTools.ResolveIdsToNames(_svc, "30000142,notanumber,34", CancellationToken.None);
+
+        Assert.Contains("Invalid ID value: 'notanumber'", result);
+    }
 }

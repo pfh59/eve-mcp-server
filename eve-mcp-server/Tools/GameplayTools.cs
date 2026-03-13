@@ -5,11 +5,15 @@ using ModelContextProtocol.Server;
 
 namespace eve_mcp_server.Tools;
 
+/// <summary>
+/// MCP tools for server status, killmails, wars, incursions, and insurance.
+/// </summary>
 [McpServerToolType]
 public static class GameplayTools
 {
     // ── Server Status ────────────────────────────────────
 
+    /// <summary>Get the current TQ server status.</summary>
     [McpServerTool, Description("Get EVE Online server status including player count, server version, and start time.")]
     public static async Task<string> GetServerStatus(GameplayService svc, CancellationToken ct)
     {
@@ -19,6 +23,7 @@ public static class GameplayTools
 
     // ── Killmails ────────────────────────────────────────
 
+    /// <summary>Fetch a single killmail by ID and hash.</summary>
     [McpServerTool, Description("Get details of a specific killmail by its ID and hash. Returns victim info, attackers, dropped/destroyed items, and solar system.")]
     public static async Task<string> GetKillmail(
         GameplayService svc,
@@ -32,6 +37,7 @@ public static class GameplayTools
 
     // ── Wars ─────────────────────────────────────────────
 
+    /// <summary>List recent war IDs with optional pagination.</summary>
     [McpServerTool, Description("Get a list of recent war IDs (up to 2000, most recent first). Optionally provide a max_war_id to paginate.")]
     public static async Task<string> GetWars(
         GameplayService svc,
@@ -42,6 +48,7 @@ public static class GameplayTools
         return JsonSerializer.Serialize(result);
     }
 
+    /// <summary>Get details for a specific war.</summary>
     [McpServerTool, Description("Get details about a specific war including aggressor, defender, allies, mutual status, and dates.")]
     public static async Task<string> GetWar(
         GameplayService svc,
@@ -52,6 +59,7 @@ public static class GameplayTools
         return result is null ? "War not found." : JsonSerializer.Serialize(result);
     }
 
+    /// <summary>Get killmails for a specific war.</summary>
     [McpServerTool, Description("Get killmails associated with a war.")]
     public static async Task<string> GetWarKillmails(
         GameplayService svc,
@@ -65,6 +73,7 @@ public static class GameplayTools
 
     // ── Incursions ───────────────────────────────────────
 
+    /// <summary>Get all active incursions.</summary>
     [McpServerTool, Description("Get all current incursions including constellation, staging system, state, and influence.")]
     public static async Task<string> GetIncursions(GameplayService svc, CancellationToken ct)
     {
@@ -74,6 +83,7 @@ public static class GameplayTools
 
     // ── Insurance ────────────────────────────────────────
 
+    /// <summary>Get insurance prices for all ship types.</summary>
     [McpServerTool, Description("Get insurance prices for all ship types including payout levels.")]
     public static async Task<string> GetInsurancePrices(GameplayService svc, CancellationToken ct)
     {

@@ -5,9 +5,13 @@ using ModelContextProtocol.Server;
 
 namespace eve_mcp_server.Tools;
 
+/// <summary>
+/// MCP tools for EVE Online market data (prices, orders, history, groups).
+/// </summary>
 [McpServerToolType]
 public static class MarketTools
 {
+    /// <summary>Get average/adjusted prices for all tradeable types.</summary>
     [McpServerTool, Description("Get average and adjusted prices for all EVE item types. Useful for getting a quick overview of item values.")]
     public static async Task<string> GetMarketPrices(MarketService svc, CancellationToken ct)
     {
@@ -15,6 +19,7 @@ public static class MarketTools
         return JsonSerializer.Serialize(result);
     }
 
+    /// <summary>Get market orders in a region, optionally filtered by type.</summary>
     [McpServerTool, Description("Get market orders in a specific region, optionally filtered by item type. Returns buy/sell orders with prices, volumes, and locations.")]
     public static async Task<string> GetMarketOrders(
         MarketService svc,
@@ -28,6 +33,7 @@ public static class MarketTools
         return JsonSerializer.Serialize(result);
     }
 
+    /// <summary>Get daily price/volume history for a type in a region.</summary>
     [McpServerTool, Description("Get daily market history (average price, volume, order count) for an item type in a region.")]
     public static async Task<string> GetMarketHistory(
         MarketService svc,
@@ -39,6 +45,7 @@ public static class MarketTools
         return JsonSerializer.Serialize(result);
     }
 
+    /// <summary>List all market group IDs.</summary>
     [McpServerTool, Description("Get all market group IDs. Market groups organize items into a browsable hierarchy.")]
     public static async Task<string> GetMarketGroups(MarketService svc, CancellationToken ct)
     {
@@ -46,6 +53,7 @@ public static class MarketTools
         return JsonSerializer.Serialize(result);
     }
 
+    /// <summary>Get a single market group with name, parent, and types.</summary>
     [McpServerTool, Description("Get details about a specific market group including its name, description, parent group, and child type IDs.")]
     public static async Task<string> GetMarketGroup(
         MarketService svc,
@@ -56,6 +64,7 @@ public static class MarketTools
         return result is null ? "Market group not found." : JsonSerializer.Serialize(result);
     }
 
+    /// <summary>List type IDs with active orders in a region.</summary>
     [McpServerTool, Description("Get a list of type IDs that have active market orders in a region.")]
     public static async Task<string> GetTypesInRegion(
         MarketService svc,

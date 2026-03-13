@@ -5,11 +5,15 @@ using ModelContextProtocol.Server;
 
 namespace eve_mcp_server.Tools;
 
+/// <summary>
+/// MCP tools for the EVE Universe: regions, systems, types, factions, activity, etc.
+/// </summary>
 [McpServerToolType]
 public static class UniverseTools
 {
-    // ── Regions ────────────────────────────────────────────────────────
+    // ── Regions ──────────────────────────────────────────
 
+    /// <summary>List all region IDs.</summary>
     [McpServerTool, Description("Get a list of all EVE Online region IDs.")]
     public static async Task<string> GetRegions(UniverseService svc, CancellationToken ct)
     {
@@ -17,6 +21,7 @@ public static class UniverseTools
         return JsonSerializer.Serialize(result);
     }
 
+    /// <summary>Get details for a specific region.</summary>
     [McpServerTool, Description("Get details about a specific EVE Online region including its name, description, and constellation IDs.")]
     public static async Task<string> GetRegion(
         UniverseService svc,
@@ -36,6 +41,7 @@ public static class UniverseTools
         return JsonSerializer.Serialize(result);
     }
 
+    /// <summary>Get details for a specific constellation.</summary>
     [McpServerTool, Description("Get details about a specific constellation including its name, region, and system IDs.")]
     public static async Task<string> GetConstellation(
         UniverseService svc,
@@ -55,6 +61,7 @@ public static class UniverseTools
         return JsonSerializer.Serialize(result);
     }
 
+    /// <summary>Get details for a specific solar system.</summary>
     [McpServerTool, Description("Get details about a specific solar system including its name, security status, constellation, stations, stargates, and planets.")]
     public static async Task<string> GetSolarSystem(
         UniverseService svc,
@@ -77,6 +84,7 @@ public static class UniverseTools
         return result is null ? "Star not found." : JsonSerializer.Serialize(result);
     }
 
+    /// <summary>Get details for an NPC station.</summary>
     [McpServerTool, Description("Get details about an NPC station (name, owner, type, services, etc.).")]
     public static async Task<string> GetStation(
         UniverseService svc,
@@ -87,6 +95,7 @@ public static class UniverseTools
         return result is null ? "Station not found." : JsonSerializer.Serialize(result);
     }
 
+    /// <summary>Get details for a stargate.</summary>
     [McpServerTool, Description("Get details about a stargate (name, destination system/stargate).")]
     public static async Task<string> GetStargate(
         UniverseService svc,
@@ -99,6 +108,7 @@ public static class UniverseTools
 
     // ── Planets & Moons ────────────────────────────────────────────────
 
+    /// <summary>Get details for a planet.</summary>
     [McpServerTool, Description("Get details about a planet (name, type, position).")]
     public static async Task<string> GetPlanet(
         UniverseService svc,
@@ -109,6 +119,7 @@ public static class UniverseTools
         return result is null ? "Planet not found." : JsonSerializer.Serialize(result);
     }
 
+    /// <summary>Get details for a moon.</summary>
     [McpServerTool, Description("Get details about a moon (name, position).")]
     public static async Task<string> GetMoon(
         UniverseService svc,
@@ -121,6 +132,7 @@ public static class UniverseTools
 
     // ── Types & Groups & Categories ────────────────────────────────────
 
+    /// <summary>Get detailed info about an item type.</summary>
     [McpServerTool, Description("Get detailed info about an EVE item type (name, description, mass, volume, capacity, dogma attributes/effects, etc.).")]
     public static async Task<string> GetType(
         UniverseService svc,
@@ -131,6 +143,7 @@ public static class UniverseTools
         return result is null ? "Type not found." : JsonSerializer.Serialize(result);
     }
 
+    /// <summary>Get details for an item group.</summary>
     [McpServerTool, Description("Get details about an item group (name, category, type IDs).")]
     public static async Task<string> GetItemGroup(
         UniverseService svc,
@@ -141,6 +154,7 @@ public static class UniverseTools
         return result is null ? "Group not found." : JsonSerializer.Serialize(result);
     }
 
+    /// <summary>List all item category IDs.</summary>
     [McpServerTool, Description("Get a list of all item category IDs.")]
     public static async Task<string> GetCategories(UniverseService svc, CancellationToken ct)
     {
@@ -148,6 +162,7 @@ public static class UniverseTools
         return JsonSerializer.Serialize(result);
     }
 
+    /// <summary>Get details for an item category.</summary>
     [McpServerTool, Description("Get details about an item category (name, group IDs).")]
     public static async Task<string> GetCategory(
         UniverseService svc,
@@ -160,6 +175,7 @@ public static class UniverseTools
 
     // ── Factions, Races, Bloodlines, Ancestries ────────────────────────
 
+    /// <summary>Get all factions.</summary>
     [McpServerTool, Description("Get all EVE Online factions with their details (name, description, station systems, corporation, militia).")]
     public static async Task<string> GetFactions(UniverseService svc, CancellationToken ct)
     {
@@ -167,6 +183,7 @@ public static class UniverseTools
         return JsonSerializer.Serialize(result);
     }
 
+    /// <summary>Get all playable races.</summary>
     [McpServerTool, Description("Get all EVE Online playable races with their details.")]
     public static async Task<string> GetRaces(UniverseService svc, CancellationToken ct)
     {
@@ -174,6 +191,7 @@ public static class UniverseTools
         return JsonSerializer.Serialize(result);
     }
 
+    /// <summary>Get all playable bloodlines.</summary>
     [McpServerTool, Description("Get all EVE Online playable bloodlines with their details.")]
     public static async Task<string> GetBloodlines(UniverseService svc, CancellationToken ct)
     {
@@ -181,6 +199,7 @@ public static class UniverseTools
         return JsonSerializer.Serialize(result);
     }
 
+    /// <summary>Get all playable ancestries.</summary>
     [McpServerTool, Description("Get all EVE Online playable ancestries with their details.")]
     public static async Task<string> GetAncestries(UniverseService svc, CancellationToken ct)
     {
@@ -190,6 +209,7 @@ public static class UniverseTools
 
     // ── System Activity ────────────────────────────────────────────────
 
+    /// <summary>Get ship jumps per system in the last hour.</summary>
     [McpServerTool, Description("Get the number of ship jumps per solar system in the last hour.")]
     public static async Task<string> GetSystemJumps(UniverseService svc, CancellationToken ct)
     {
@@ -197,6 +217,7 @@ public static class UniverseTools
         return JsonSerializer.Serialize(result);
     }
 
+    /// <summary>Get NPC and player kills per system in the last hour.</summary>
     [McpServerTool, Description("Get the number of NPC and player ship kills per solar system in the last hour.")]
     public static async Task<string> GetSystemKills(UniverseService svc, CancellationToken ct)
     {

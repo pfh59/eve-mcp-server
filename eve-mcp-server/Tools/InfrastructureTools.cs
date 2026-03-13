@@ -5,11 +5,15 @@ using ModelContextProtocol.Server;
 
 namespace eve_mcp_server.Tools;
 
+/// <summary>
+/// MCP tools for routes, industry, sovereignty, dogma, and loyalty stores.
+/// </summary>
 [McpServerToolType]
 public static class InfrastructureTools
 {
     // ── Routes ───────────────────────────────────────────
 
+    /// <summary>Calculate the shortest route between two systems.</summary>
     [McpServerTool, Description("Calculate the shortest route between two solar systems. Returns an ordered list of solar system IDs to travel through.")]
     public static async Task<string> GetRoute(
         InfrastructureService svc,
@@ -23,6 +27,7 @@ public static class InfrastructureTools
 
     // ── Industry ─────────────────────────────────────────
 
+    /// <summary>List public industry facilities.</summary>
     [McpServerTool, Description("Get public industry facilities that can be used for manufacturing, research, etc.")]
     public static async Task<string> GetIndustryFacilities(InfrastructureService svc, CancellationToken ct)
     {
@@ -30,6 +35,7 @@ public static class InfrastructureTools
         return JsonSerializer.Serialize(result);
     }
 
+    /// <summary>Get cost indices for industry activities per system.</summary>
     [McpServerTool, Description("Get industry cost indices for all solar systems, showing the cost multiplier for each activity type.")]
     public static async Task<string> GetIndustrySystems(InfrastructureService svc, CancellationToken ct)
     {
@@ -39,6 +45,7 @@ public static class InfrastructureTools
 
     // ── Sovereignty ──────────────────────────────────────
 
+    /// <summary>Get the sovereignty map.</summary>
     [McpServerTool, Description("Get the sovereignty map showing which alliance/corporation/faction owns each solar system.")]
     public static async Task<string> GetSovereigntyMap(InfrastructureService svc, CancellationToken ct)
     {
@@ -46,6 +53,7 @@ public static class InfrastructureTools
         return JsonSerializer.Serialize(result);
     }
 
+    /// <summary>Get sovereignty structures with vulnerability timers.</summary>
     [McpServerTool, Description("Get sovereignty structures (TCUs, IHubs) including vulnerability timers.")]
     public static async Task<string> GetSovereigntyStructures(InfrastructureService svc, CancellationToken ct)
     {
@@ -55,6 +63,7 @@ public static class InfrastructureTools
 
     // ── Dogma ────────────────────────────────────────────
 
+    /// <summary>List all dogma attribute IDs.</summary>
     [McpServerTool, Description("Get a list of all dogma attribute IDs. Dogma attributes define item properties like damage, speed, etc.")]
     public static async Task<string> GetDogmaAttributes(InfrastructureService svc, CancellationToken ct)
     {
@@ -62,6 +71,7 @@ public static class InfrastructureTools
         return JsonSerializer.Serialize(result);
     }
 
+    /// <summary>Get details for a dogma attribute.</summary>
     [McpServerTool, Description("Get details about a specific dogma attribute (name, description, default value, high/low is good, etc.).")]
     public static async Task<string> GetDogmaAttribute(
         InfrastructureService svc,
@@ -72,6 +82,7 @@ public static class InfrastructureTools
         return result is null ? "Dogma attribute not found." : JsonSerializer.Serialize(result);
     }
 
+    /// <summary>List all dogma effect IDs.</summary>
     [McpServerTool, Description("Get a list of all dogma effect IDs. Dogma effects define special abilities and behaviors.")]
     public static async Task<string> GetDogmaEffects(InfrastructureService svc, CancellationToken ct)
     {
@@ -79,6 +90,7 @@ public static class InfrastructureTools
         return JsonSerializer.Serialize(result);
     }
 
+    /// <summary>Get details for a dogma effect.</summary>
     [McpServerTool, Description("Get details about a specific dogma effect.")]
     public static async Task<string> GetDogmaEffect(
         InfrastructureService svc,
@@ -91,6 +103,7 @@ public static class InfrastructureTools
 
     // ── Loyalty Store ────────────────────────────────────
 
+    /// <summary>Get loyalty store offers for a corporation.</summary>
     [McpServerTool, Description("Get loyalty store offers for a specific corporation, including required LP, ISK, and items.")]
     public static async Task<string> GetLoyaltyStoreOffers(
         InfrastructureService svc,

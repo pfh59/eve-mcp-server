@@ -1,4 +1,4 @@
-using eve_mcp_server.Infrastructure;
+using eve_mcp_server.Esi;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace eve_mcp_server.Tests;

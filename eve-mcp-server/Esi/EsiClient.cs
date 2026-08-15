@@ -4,7 +4,7 @@ using System.Text.Json;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
-namespace eve_mcp_server.Infrastructure;
+namespace eve_mcp_server.Esi;
 
 /// <summary>
 /// Central HTTP client for ESI: identifying headers on every request,

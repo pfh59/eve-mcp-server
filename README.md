@@ -10,7 +10,7 @@ This server exposes **52 MCP tools** covering the public ESI endpoints, enabling
 
 - **52 MCP tools** across 6 domains, all prefixed `eve_` (e.g. `eve_get_market_orders`)
 - **ESI best practices**: identifying User-Agent, `X-Compatibility-Date` versioning, Expires + ETag caching (If-None-Match/304), error limit throttling, bounded 429 retry with Retry-After
-- **Clean architecture**: Infrastructure → Models → Services → Tools
+- **Clean architecture**: Esi → Models → Services → Tools
 - **Stdio transport** for seamless integration with MCP-compatible clients
 
 ## Tool Domains
@@ -28,7 +28,7 @@ This server exposes **52 MCP tools** covering the public ESI endpoints, enabling
 
 ```
 eve-mcp-server/
-├── Infrastructure/
+├── Esi/
 │   ├── EsiClient.cs           # Central HTTP client (caching, rate limits, retries)
 │   ├── EsiClientOptions.cs    # ESI configuration (base URL, User-Agent, datasource, ...)
 │   └── EsiApiException.cs     # Typed error surfaced to tools for 4xx/5xx/rate limits

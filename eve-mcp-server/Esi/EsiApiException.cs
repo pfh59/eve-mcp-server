@@ -1,4 +1,4 @@
-namespace eve_mcp_server.Infrastructure;
+namespace eve_mcp_server.Esi;
 
 /// <summary>
 /// Raised when ESI returns a non-recoverable error (4xx other than 404, 5xx,

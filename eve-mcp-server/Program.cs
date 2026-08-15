@@ -2,7 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using eve_mcp_server.Infrastructure;
+using eve_mcp_server.Esi;
 using eve_mcp_server.Services;
 
 var builder = Host.CreateApplicationBuilder(args);

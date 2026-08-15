@@ -1,7 +1,7 @@
 using System.Net;
-using eve_mcp_server.Infrastructure;
+using eve_mcp_server.Esi;
 
-namespace eve_mcp_server.Tests.Infrastructure;
+namespace eve_mcp_server.Tests.Esi;
 
 public class EsiClientTests
 {

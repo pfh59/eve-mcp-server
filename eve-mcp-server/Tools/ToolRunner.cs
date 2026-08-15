@@ -1,5 +1,5 @@
 using System.Text.Json;
-using eve_mcp_server.Infrastructure;
+using eve_mcp_server.Esi;
 
 namespace eve_mcp_server.Tools;
 

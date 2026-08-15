@@ -1,4 +1,4 @@
-using eve_mcp_server.Infrastructure;
+using eve_mcp_server.Esi;
 using eve_mcp_server.Models;
 
 namespace eve_mcp_server.Services;

@@ -1,4 +1,4 @@
-namespace eve_mcp_server.Infrastructure;
+namespace eve_mcp_server.Esi;
 
 /// <summary>
 /// Configuration options for the ESI HTTP client.

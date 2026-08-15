@@ -1,0 +1,11 @@
+**/bin/
+**/obj/
+.git/
+.github/
+.vscode/
+.claude/
+eve-mcp-server.Tests/
+*.md
+.DS_Store
+Dockerfile
+.dockerignore

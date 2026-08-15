@@ -68,6 +68,40 @@ dotnet build
 dotnet run --project eve-mcp-server
 ```
 
+## Docker
+
+Images are published to GHCR for every release and every push to `main`:
+
+| Tag | Meaning |
+|-----|---------|
+| `latest`, `X.Y.Z`, `X.Y` | Latest / specific release (from `v*` tags) |
+| `dev` | Current build of `main` (unstable) |
+
+```bash
+docker run -i --rm ghcr.io/pfh59/eve-mcp-server:latest
+```
+
+The `-i` flag is required: the MCP stdio transport needs stdin to stay open.
+
+MCP client configuration:
+
+```json
+{
+  "mcpServers": {
+    "eve-online": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm",
+        "-e", "ESI__UserAgent=my-eve-assistant/1.0 (you@example.com)",
+        "ghcr.io/pfh59/eve-mcp-server:latest"
+      ]
+    }
+  }
+}
+```
+
+To build locally: `docker build -t eve-mcp-server:local .`
+
 ## Testing
 
 ```bash

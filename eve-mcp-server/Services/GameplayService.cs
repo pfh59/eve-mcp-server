@@ -12,15 +12,9 @@ public sealed class GameplayService
 
     public GameplayService(EsiClient client) => _client = client;
 
-    // ── Server Status ────────────────────────────────────
-
-    /// <summary>Get EVE server status (player count, version, uptime).</summary>
     public Task<ServerStatus?> GetStatusAsync(CancellationToken ct = default)
         => _client.GetAsync<ServerStatus>("/status/", ct);
 
-    // ── Killmails ────────────────────────────────────────
-
-    /// <summary>Get a single killmail by ID and hash.</summary>
     public Task<Killmail?> GetKillmailAsync(long killmailId, string killmailHash, CancellationToken ct = default)
     {
         // Killmail hashes are 40-char hex (SHA-1); reject anything else before it reaches the URL
@@ -32,9 +26,7 @@ public sealed class GameplayService
     private static readonly System.Text.RegularExpressions.Regex KillmailHashPattern =
         new("^[a-fA-F0-9]{40}$", System.Text.RegularExpressions.RegexOptions.Compiled);
 
-    // ── Wars ─────────────────────────────────────────────
-
-    /// <summary>Get a list of war IDs (most recent first).</summary>
+    /// <summary>War IDs, most recent first; paginate with maxWarId.</summary>
     public Task<List<long>?> GetWarsAsync(long? maxWarId = null, CancellationToken ct = default)
     {
         var url = "/wars/";
@@ -43,26 +35,18 @@ public sealed class GameplayService
         return _client.GetAsync<List<long>>(url, ct);
     }
 
-    /// <summary>Get war details by ID.</summary>
     public Task<War?> GetWarAsync(long warId, CancellationToken ct = default)
         => _client.GetAsync<War>($"/wars/{warId}/", ct);
 
-    /// <summary>Get killmails for a war.</summary>
     public Task<List<WarKillmail>?> GetWarKillmailsAsync(long warId, int page = 1, CancellationToken ct = default)
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(page, 1);
         return _client.GetAsync<List<WarKillmail>>($"/wars/{warId}/killmails/?page={page}", ct);
     }
 
-    // ── Incursions ───────────────────────────────────────
-
-    /// <summary>Get current incursions.</summary>
     public Task<List<Incursion>?> GetIncursionsAsync(CancellationToken ct = default)
         => _client.GetAsync<List<Incursion>>("/incursions/", ct);
 
-    // ── Insurance ────────────────────────────────────────
-
-    /// <summary>Get insurance prices for all ship types.</summary>
     public Task<List<InsurancePrice>?> GetInsurancePricesAsync(CancellationToken ct = default)
         => _client.GetAsync<List<InsurancePrice>>("/insurance/prices/", ct);
 }

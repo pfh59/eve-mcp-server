@@ -2,10 +2,6 @@ using System.Text.Json.Serialization;
 
 namespace eve_mcp_server.Models;
 
-// ═══════════════════════════════════════════
-// Character & Alliance Models (public info only)
-// ═══════════════════════════════════════════
-
 public sealed class CharacterPublicInfo
 {
     [JsonPropertyName("name")]

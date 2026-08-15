@@ -2,10 +2,6 @@ using System.Text.Json.Serialization;
 
 namespace eve_mcp_server.Models;
 
-// ═══════════════════════════════════════════
-// Server Status, Killmails, Wars, Incursions
-// ═══════════════════════════════════════════
-
 public sealed class ServerStatus
 {
     [JsonPropertyName("players")]

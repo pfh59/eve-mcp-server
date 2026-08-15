@@ -170,7 +170,6 @@ public class EsiClientTests
         var result = await client.PostAsync<object>("/universe/ids/", new[] { "Test" });
 
         Assert.NotNull(result);
-        // Verify POST method was used
         Assert.Equal(HttpMethod.Post, handler.LastRequest.Method);
     }
 

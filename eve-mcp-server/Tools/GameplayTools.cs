@@ -10,16 +10,10 @@ namespace eve_mcp_server.Tools;
 [McpServerToolType]
 public static class GameplayTools
 {
-    // ── Server Status ────────────────────────────────────
-
-    /// <summary>Get the current TQ server status.</summary>
     [McpServerTool(Name = "eve_get_server_status"), Description("Get EVE Online server status including player count, server version, and start time.")]
     public static Task<string> GetServerStatus(GameplayService svc, CancellationToken ct)
         => ToolRunner.RunAsync(() => svc.GetStatusAsync(ct), "Could not retrieve server status.");
 
-    // ── Killmails ────────────────────────────────────────
-
-    /// <summary>Fetch a single killmail by ID and hash.</summary>
     [McpServerTool(Name = "eve_get_killmail"), Description("Get details of a specific killmail by its ID and hash. Returns victim info, attackers, dropped/destroyed items, and solar system.")]
     public static Task<string> GetKillmail(
         GameplayService svc,
@@ -28,9 +22,6 @@ public static class GameplayTools
         CancellationToken ct = default)
         => ToolRunner.RunAsync(() => svc.GetKillmailAsync(killmailId, killmailHash, ct), "Killmail not found.");
 
-    // ── Wars ─────────────────────────────────────────────
-
-    /// <summary>List recent war IDs with optional pagination.</summary>
     [McpServerTool(Name = "eve_get_wars"), Description("Get a list of recent war IDs (up to 2000, most recent first). Optionally provide a max_war_id to paginate.")]
     public static Task<string> GetWars(
         GameplayService svc,
@@ -38,7 +29,6 @@ public static class GameplayTools
         CancellationToken ct = default)
         => ToolRunner.RunAsync(() => svc.GetWarsAsync(maxWarId, ct));
 
-    /// <summary>Get details for a specific war.</summary>
     [McpServerTool(Name = "eve_get_war"), Description("Get details about a specific war including aggressor, defender, allies, mutual status, and dates.")]
     public static Task<string> GetWar(
         GameplayService svc,
@@ -46,7 +36,6 @@ public static class GameplayTools
         CancellationToken ct = default)
         => ToolRunner.RunAsync(() => svc.GetWarAsync(warId, ct), "War not found.");
 
-    /// <summary>Get killmails for a specific war.</summary>
     [McpServerTool(Name = "eve_get_war_killmails"), Description("Get killmails associated with a war.")]
     public static Task<string> GetWarKillmails(
         GameplayService svc,
@@ -55,16 +44,10 @@ public static class GameplayTools
         CancellationToken ct = default)
         => ToolRunner.RunAsync(() => svc.GetWarKillmailsAsync(warId, page, ct));
 
-    // ── Incursions ───────────────────────────────────────
-
-    /// <summary>Get all active incursions.</summary>
     [McpServerTool(Name = "eve_get_incursions"), Description("Get all current incursions including constellation, staging system, state, and influence.")]
     public static Task<string> GetIncursions(GameplayService svc, CancellationToken ct)
         => ToolRunner.RunAsync(() => svc.GetIncursionsAsync(ct));
 
-    // ── Insurance ────────────────────────────────────────
-
-    /// <summary>Get insurance prices for all ship types.</summary>
     [McpServerTool(Name = "eve_get_insurance_prices"), Description("Get insurance prices for all ship types including payout levels.")]
     public static Task<string> GetInsurancePrices(GameplayService svc, CancellationToken ct)
         => ToolRunner.RunAsync(() => svc.GetInsurancePricesAsync(ct));

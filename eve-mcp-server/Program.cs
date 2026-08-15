@@ -8,7 +8,7 @@ using eve_mcp_server.Services;
 var builder = Host.CreateApplicationBuilder(args);
 builder.Logging.AddConsole(consoleLogOptions =>
 {
-    // Configure all logs to go to stderr
+    // stdout carries the JSON-RPC stream; all logs must go to stderr
     consoleLogOptions.LogToStandardErrorThreshold = LogLevel.Trace;
 });
 
@@ -17,14 +17,14 @@ builder.Services
     .WithStdioServerTransport()
     .WithToolsFromAssembly();
 
-// Infrastructure — overridable via appsettings.json or ESI__* environment variables
+// Overridable via appsettings.json or ESI__* environment variables
 var esiOptions = builder.Configuration.GetSection("ESI").Get<EsiClientOptions>() ?? new EsiClientOptions();
 builder.Services.AddSingleton(esiOptions);
 builder.Services
     .AddHttpClient(nameof(EsiClient), http => http.Timeout = TimeSpan.FromSeconds(esiOptions.TimeoutSeconds))
     .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
     {
-        // The client below is a singleton, so rotate pooled connections to pick up DNS changes
+        // EsiClient is a singleton: rotate pooled connections so DNS changes are picked up
         PooledConnectionLifetime = TimeSpan.FromMinutes(15)
     });
 
@@ -34,7 +34,6 @@ builder.Services.AddSingleton(sp => new EsiClient(
     sp.GetRequiredService<EsiClientOptions>(),
     sp.GetRequiredService<ILoggerFactory>().CreateLogger<EsiClient>()));
 
-// Services
 builder.Services.AddSingleton<UniverseService>();
 builder.Services.AddSingleton<MarketService>();
 builder.Services.AddSingleton<SearchService>();

@@ -2,10 +2,6 @@ using System.Text.Json.Serialization;
 
 namespace eve_mcp_server.Models;
 
-// ═══════════════════════════════════════════
-// Search / Names Models
-// ═══════════════════════════════════════════
-
 public sealed class UniverseIdsResult
 {
     [JsonPropertyName("agents")]

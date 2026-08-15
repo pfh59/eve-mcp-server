@@ -16,7 +16,6 @@ public static class SearchTools
     /// <summary>ESI caps /universe/names/ at 1000 IDs per request.</summary>
     private const int MaxIds = 1000;
 
-    /// <summary>Resolve one or more names to their ESI IDs (exact match).</summary>
     [McpServerTool(Name = "eve_resolve_names_to_ids"), Description("Resolve EVE Online names to their IDs. Provide one or more names (characters, corporations, alliances, types, systems, regions, etc.) and get back the matching IDs grouped by category. Only exact matches are returned.")]
     public static Task<string> ResolveNamesToIds(
         SearchService svc,
@@ -31,7 +30,6 @@ public static class SearchTools
         return ToolRunner.RunAsync(() => svc.ResolveNamesToIdsAsync(nameList, ct), "No matches found.");
     }
 
-    /// <summary>Resolve one or more ESI IDs to their names and categories.</summary>
     [McpServerTool(Name = "eve_resolve_ids_to_names"), Description("Resolve EVE Online IDs to their names and categories. Give one or more IDs and get back the name and category (character, corporation, alliance, type, system, etc.).")]
     public static Task<string> ResolveIdsToNames(
         SearchService svc,

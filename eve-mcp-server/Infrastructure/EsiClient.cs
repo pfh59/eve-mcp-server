@@ -7,14 +7,10 @@ using Microsoft.Extensions.Logging;
 namespace eve_mcp_server.Infrastructure;
 
 /// <summary>
-/// Central HTTP client for ESI following best practices:
-/// - User-Agent and X-Compatibility-Date headers on every request
-/// - Time-based caching honoring the Expires header (no request before expiry)
-/// - ETag caching with If-None-Match, bounded in size (LRU eviction)
-/// - Error limit tracking (X-ESI-Error-Limit headers) shared across all callers
-/// - Bounded retry on 429 with capped Retry-After
-/// Server errors and unexpected 4xx surface as <see cref="EsiApiException"/>;
-/// only 404 maps to a null result ("not found").
+/// Central HTTP client for ESI: identifying headers on every request,
+/// Expires + ETag caching (size-bounded), shared error-limit throttling,
+/// and bounded 429 retries. Only 404 maps to a null result; other 4xx,
+/// 5xx, and exhausted retries surface as <see cref="EsiApiException"/>.
 /// </summary>
 public sealed class EsiClient : IDisposable
 {
@@ -85,7 +81,6 @@ public sealed class EsiClient : IDisposable
             TrackErrorLimits(response);
             TrackRateLimits(response);
 
-            // 304 Not Modified → return cached body, refreshed expiry
             if (response.StatusCode == HttpStatusCode.NotModified && cached is not null)
             {
                 _logger.LogDebug("ESI cache hit (304) for {Url}", url);
@@ -228,7 +223,7 @@ public sealed class EsiClient : IDisposable
     {
         _cache.Set(url, entry, new MemoryCacheEntryOptions
         {
-            // Size accounting keeps the cache under MaxCacheSizeBytes
+            // In-memory footprint: UTF-16 body and key, plus entry overhead
             Size = entry.Body.Length * sizeof(char) + url.Length * sizeof(char) + 64,
             SlidingExpiration = CacheSlidingExpiration
         });

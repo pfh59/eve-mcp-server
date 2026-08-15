@@ -2,10 +2,6 @@ using System.Text.Json.Serialization;
 
 namespace eve_mcp_server.Models;
 
-// ═══════════════════════════════════════════
-// Universe Models
-// ═══════════════════════════════════════════
-
 public sealed class Region
 {
     [JsonPropertyName("region_id")]

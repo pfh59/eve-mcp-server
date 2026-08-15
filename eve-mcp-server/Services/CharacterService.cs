@@ -12,27 +12,22 @@ public sealed class CharacterService
 
     public CharacterService(EsiClient client) => _client = client;
 
-    /// <summary>Get public info about a character.</summary>
     public Task<CharacterPublicInfo?> GetCharacterAsync(long characterId, CancellationToken ct = default)
         => _client.GetAsync<CharacterPublicInfo>($"/characters/{characterId}/", ct);
 
-    /// <summary>Get character affiliations (corporation, alliance, faction) for up to 1000 characters.</summary>
+    /// <summary>Corporation/alliance/faction affiliations; ESI caps the batch at 1000 IDs.</summary>
     public Task<List<CharacterAffiliation>?> GetAffiliationsAsync(List<long> characterIds, CancellationToken ct = default)
         => _client.PostAsync<List<CharacterAffiliation>>("/characters/affiliation/", characterIds, ct);
 
-    /// <summary>Get public info about a corporation.</summary>
     public Task<CorporationPublicInfo?> GetCorporationAsync(long corporationId, CancellationToken ct = default)
         => _client.GetAsync<CorporationPublicInfo>($"/corporations/{corporationId}/", ct);
 
-    /// <summary>Get list of all alliances.</summary>
     public Task<List<long>?> GetAlliancesAsync(CancellationToken ct = default)
         => _client.GetAsync<List<long>>("/alliances/", ct);
 
-    /// <summary>Get public info about an alliance.</summary>
     public Task<AlliancePublicInfo?> GetAllianceAsync(long allianceId, CancellationToken ct = default)
         => _client.GetAsync<AlliancePublicInfo>($"/alliances/{allianceId}/", ct);
 
-    /// <summary>Get corporations in an alliance.</summary>
     public Task<List<long>?> GetAllianceCorporationsAsync(long allianceId, CancellationToken ct = default)
         => _client.GetAsync<List<long>>($"/alliances/{allianceId}/corporations/", ct);
 }

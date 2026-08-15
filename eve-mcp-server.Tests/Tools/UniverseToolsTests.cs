@@ -39,7 +39,7 @@ public class UniverseToolsTests
     [Fact]
     public async Task GetRegion_WhenNotFound_ReturnsNotFoundMessage()
     {
-        _handler.Queue500(); // 5xx returns null
+        _handler.Queue404();
 
         var result = await UniverseTools.GetRegion(_svc, 999999, CancellationToken.None);
 

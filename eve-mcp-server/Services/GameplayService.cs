@@ -22,7 +22,15 @@ public sealed class GameplayService
 
     /// <summary>Get a single killmail by ID and hash.</summary>
     public Task<Killmail?> GetKillmailAsync(long killmailId, string killmailHash, CancellationToken ct = default)
-        => _client.GetAsync<Killmail>($"/killmails/{killmailId}/{killmailHash}/", ct);
+    {
+        // Killmail hashes are 40-char hex (SHA-1); reject anything else before it reaches the URL
+        if (!KillmailHashPattern.IsMatch(killmailHash))
+            throw new ArgumentException("killmailHash must be a 40-character hexadecimal string.", nameof(killmailHash));
+        return _client.GetAsync<Killmail>($"/killmails/{killmailId}/{killmailHash}/", ct);
+    }
+
+    private static readonly System.Text.RegularExpressions.Regex KillmailHashPattern =
+        new("^[a-fA-F0-9]{40}$", System.Text.RegularExpressions.RegexOptions.Compiled);
 
     // ── Wars ─────────────────────────────────────────────
 
@@ -41,7 +49,10 @@ public sealed class GameplayService
 
     /// <summary>Get killmails for a war.</summary>
     public Task<List<WarKillmail>?> GetWarKillmailsAsync(long warId, int page = 1, CancellationToken ct = default)
-        => _client.GetAsync<List<WarKillmail>>($"/wars/{warId}/killmails/?page={page}", ct);
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(page, 1);
+        return _client.GetAsync<List<WarKillmail>>($"/wars/{warId}/killmails/?page={page}", ct);
+    }
 
     // ── Incursions ───────────────────────────────────────
 

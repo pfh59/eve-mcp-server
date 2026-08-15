@@ -29,11 +29,22 @@ public class CharacterToolsTests
     [Fact]
     public async Task GetCharacter_WhenNotFound_ReturnsMessage()
     {
-        _handler.Queue500();
+        _handler.Queue404();
 
         var result = await CharacterTools.GetCharacter(_svc, 999, CancellationToken.None);
 
         Assert.Equal("Character not found.", result);
+    }
+
+    [Fact]
+    public async Task GetCharacter_OnServerError_ReturnsEsiErrorMessage()
+    {
+        _handler.Queue500();
+
+        var result = await CharacterTools.GetCharacter(_svc, 999, CancellationToken.None);
+
+        Assert.StartsWith("ESI request failed", result);
+        Assert.Contains("500", result);
     }
 
     [Fact]
@@ -59,6 +70,17 @@ public class CharacterToolsTests
     }
 
     [Fact]
+    public async Task GetCharacterAffiliations_TooManyIds_ReturnsErrorMessage()
+    {
+        var ids = string.Join(',', Enumerable.Range(1, 1001));
+
+        var result = await CharacterTools.GetCharacterAffiliations(_svc, ids, CancellationToken.None);
+
+        Assert.Contains("Too many character IDs", result);
+        Assert.Empty(_handler.Requests);
+    }
+
+    [Fact]
     public async Task GetCorporation_ReturnsJson()
     {
         _handler.QueueJsonResponse(new { name = "Test Corp", ticker = "TCOR", member_count = 42 });
@@ -72,7 +94,7 @@ public class CharacterToolsTests
     [Fact]
     public async Task GetCorporation_WhenNotFound_ReturnsMessage()
     {
-        _handler.Queue500();
+        _handler.Queue404();
 
         var result = await CharacterTools.GetCorporation(_svc, 999, CancellationToken.None);
 
@@ -102,7 +124,7 @@ public class CharacterToolsTests
     [Fact]
     public async Task GetAlliance_WhenNotFound_ReturnsMessage()
     {
-        _handler.Queue500();
+        _handler.Queue404();
 
         var result = await CharacterTools.GetAlliance(_svc, 999, CancellationToken.None);
 

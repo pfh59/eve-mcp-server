@@ -44,7 +44,7 @@ public class GameplayServiceTests
         };
         _handler.QueueJsonResponse(killmail);
 
-        var result = await _svc.GetKillmailAsync(12345, "abcdef");
+        var result = await _svc.GetKillmailAsync(12345, "a1b2c3d4e5f6a7b8c9d0a1b2c3d4e5f6a7b8c9d0");
 
         Assert.NotNull(result);
         Assert.Equal(12345, result.KillmailId);

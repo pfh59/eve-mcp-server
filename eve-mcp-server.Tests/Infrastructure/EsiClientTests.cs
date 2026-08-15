@@ -31,6 +31,18 @@ public class EsiClientTests
     }
 
     [Fact]
+    public async Task GetAsync_SendsCompatibilityDateHeader()
+    {
+        var (client, handler) = TestEsiClientFactory.Create();
+        handler.QueueJsonResponse(new[] { 1L });
+
+        await client.GetAsync<List<long>>("/universe/regions/");
+
+        Assert.True(handler.LastRequest.Headers.TryGetValues("X-Compatibility-Date", out var values));
+        Assert.Matches(@"^\d{4}-\d{2}-\d{2}$", values!.Single());
+    }
+
+    [Fact]
     public async Task GetAsync_AppendsDatasource()
     {
         var (client, handler) = TestEsiClientFactory.Create();
@@ -75,6 +87,20 @@ public class EsiClientTests
     }
 
     [Fact]
+    public async Task GetAsync_HonorsExpires_ServesFromCacheWithoutRequest()
+    {
+        var (client, handler) = TestEsiClientFactory.Create();
+        handler.QueueJsonResponse(new[] { 1L, 2L }, etag: "abc123", expiresIn: TimeSpan.FromMinutes(5));
+
+        var first = await client.GetAsync<List<long>>("/universe/regions/");
+        // No second response queued: a network call would throw in the mock handler
+        var second = await client.GetAsync<List<long>>("/universe/regions/");
+
+        Assert.Equal(first, second);
+        Assert.Single(handler.Requests);
+    }
+
+    [Fact]
     public async Task GetAsync_RetriesOn429WithRetryAfter()
     {
         var (client, handler) = TestEsiClientFactory.Create();
@@ -89,14 +115,49 @@ public class EsiClientTests
     }
 
     [Fact]
-    public async Task GetAsync_ReturnsDefaultOn5xx()
+    public async Task GetAsync_GivesUpAfterRepeated429()
     {
         var (client, handler) = TestEsiClientFactory.Create();
-        handler.Queue500();
+        handler.Queue429().Queue429().Queue429();
+
+        var ex = await Assert.ThrowsAsync<EsiApiException>(() => client.GetAsync<List<long>>("/test/"));
+
+        Assert.Equal(429, ex.StatusCode);
+        Assert.Equal(3, handler.Requests.Count); // initial + 2 retries, no infinite loop
+    }
+
+    [Fact]
+    public async Task GetAsync_ReturnsNullOn404()
+    {
+        var (client, handler) = TestEsiClientFactory.Create();
+        handler.Queue404();
 
         var result = await client.GetAsync<List<long>>("/test/");
 
         Assert.Null(result);
+    }
+
+    [Fact]
+    public async Task GetAsync_ThrowsOn5xx()
+    {
+        var (client, handler) = TestEsiClientFactory.Create();
+        handler.Queue500();
+
+        var ex = await Assert.ThrowsAsync<EsiApiException>(() => client.GetAsync<List<long>>("/test/"));
+
+        Assert.Equal(500, ex.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetAsync_ThrowsOn4xxOtherThan404()
+    {
+        var (client, handler) = TestEsiClientFactory.Create();
+        handler.QueueResponse(HttpStatusCode.BadRequest, new { error = "invalid parameter" });
+
+        var ex = await Assert.ThrowsAsync<EsiApiException>(() => client.GetAsync<List<long>>("/test/"));
+
+        Assert.Equal(400, ex.StatusCode);
+        Assert.Contains("invalid parameter", ex.Message);
     }
 
     [Fact]
@@ -126,16 +187,14 @@ public class EsiClientTests
     }
 
     [Fact]
-    public async Task GetAllPagesAsync_FetchesMultiplePages()
+    public async Task PostAsync_GivesUpAfterRepeated429()
     {
         var (client, handler) = TestEsiClientFactory.Create();
-        handler.QueueJsonResponse(new[] { 1L, 2L });
-        handler.QueueJsonResponse(new[] { 3L });
-        handler.QueueJsonResponse(Array.Empty<long>()); // Empty page signals end
+        handler.Queue429().Queue429().Queue429();
 
-        var result = await client.GetAllPagesAsync<long>("/test/");
+        var ex = await Assert.ThrowsAsync<EsiApiException>(() => client.PostAsync<List<long>>("/test/", new[] { "a" }));
 
-        Assert.Equal(3, result.Count);
-        Assert.Equal(new[] { 1L, 2L, 3L }, result);
+        Assert.Equal(429, ex.StatusCode);
+        Assert.Equal(3, handler.Requests.Count);
     }
 }

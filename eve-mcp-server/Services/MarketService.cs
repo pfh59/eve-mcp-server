@@ -26,7 +26,12 @@ public sealed class MarketService
     /// </summary>
     public Task<List<MarketOrder>?> GetOrdersAsync(long regionId, string orderType = "all", long? typeId = null, int page = 1, CancellationToken ct = default)
     {
-        var url = $"/markets/{regionId}/orders/?order_type={orderType}&page={page}";
+        var normalizedOrderType = orderType?.Trim().ToLowerInvariant();
+        if (normalizedOrderType is not ("buy" or "sell" or "all"))
+            throw new ArgumentException("orderType must be 'buy', 'sell' or 'all'.", nameof(orderType));
+        ArgumentOutOfRangeException.ThrowIfLessThan(page, 1);
+
+        var url = $"/markets/{regionId}/orders/?order_type={normalizedOrderType}&page={page}";
         if (typeId.HasValue)
             url += $"&type_id={typeId.Value}";
         return _client.GetAsync<List<MarketOrder>>(url, ct);
@@ -52,5 +57,8 @@ public sealed class MarketService
 
     /// <summary>Get a list of type IDs that have active orders in a region.</summary>
     public Task<List<long>?> GetTypesInRegionAsync(long regionId, int page = 1, CancellationToken ct = default)
-        => _client.GetAsync<List<long>>($"/markets/{regionId}/types/?page={page}", ct);
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(page, 1);
+        return _client.GetAsync<List<long>>($"/markets/{regionId}/types/?page={page}", ct);
+    }
 }

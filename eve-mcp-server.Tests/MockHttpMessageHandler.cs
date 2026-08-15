@@ -17,7 +17,7 @@ public sealed class MockHttpMessageHandler : DelegatingHandler
     public HttpRequestMessage LastRequest => _requests[^1];
 
     /// <summary>Queue a response to be returned on the next SendAsync call.</summary>
-    public MockHttpMessageHandler QueueResponse(HttpStatusCode statusCode, object? body = null, string? etag = null)
+    public MockHttpMessageHandler QueueResponse(HttpStatusCode statusCode, object? body = null, string? etag = null, TimeSpan? expiresIn = null)
     {
         var response = new HttpResponseMessage(statusCode);
         if (body is not null)
@@ -26,6 +26,10 @@ public sealed class MockHttpMessageHandler : DelegatingHandler
                 JsonSerializer.Serialize(body),
                 Encoding.UTF8,
                 "application/json");
+            if (expiresIn is not null)
+            {
+                response.Content.Headers.Expires = DateTimeOffset.UtcNow.Add(expiresIn.Value);
+            }
         }
         if (etag is not null)
         {
@@ -40,8 +44,23 @@ public sealed class MockHttpMessageHandler : DelegatingHandler
     }
 
     /// <summary>Queue a 200 OK response with a JSON body.</summary>
-    public MockHttpMessageHandler QueueJsonResponse<T>(T body, string? etag = null)
-        => QueueResponse(HttpStatusCode.OK, body, etag);
+    public MockHttpMessageHandler QueueJsonResponse<T>(T body, string? etag = null, TimeSpan? expiresIn = null)
+        => QueueResponse(HttpStatusCode.OK, body, etag, expiresIn);
+
+    /// <summary>Queue a 404 Not Found response.</summary>
+    public MockHttpMessageHandler Queue404()
+        => QueueResponse(HttpStatusCode.NotFound);
+
+    /// <summary>Queue a single 429 Too Many Requests response.</summary>
+    public MockHttpMessageHandler Queue429()
+    {
+        var rateLimited = new HttpResponseMessage(HttpStatusCode.TooManyRequests);
+        rateLimited.Headers.RetryAfter = new RetryConditionHeaderValue(TimeSpan.FromMilliseconds(10));
+        rateLimited.Headers.TryAddWithoutValidation("X-ESI-Error-Limit-Remain", "100");
+        rateLimited.Headers.TryAddWithoutValidation("X-ESI-Error-Limit-Reset", "60");
+        _responses.Enqueue(rateLimited);
+        return this;
+    }
 
     /// <summary>Queue a 304 Not Modified response.</summary>
     public MockHttpMessageHandler Queue304()

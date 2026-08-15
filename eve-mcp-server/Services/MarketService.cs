@@ -1,4 +1,4 @@
-using eve_mcp_server.Infrastructure;
+using eve_mcp_server.Esi;
 using eve_mcp_server.Models;
 
 namespace eve_mcp_server.Services;
@@ -13,44 +13,36 @@ public sealed class MarketService
 
     public MarketService(EsiClient client) => _client = client;
 
-    // ── Market Prices ────────────────────────────────────
-
-    /// <summary>Get a list of average and adjusted prices for all item types.</summary>
+    /// <summary>Average and adjusted prices for every item type.</summary>
     public Task<List<MarketPrice>?> GetPricesAsync(CancellationToken ct = default)
         => _client.GetAsync<List<MarketPrice>>("/markets/prices/", ct);
 
-    // ── Market Orders ────────────────────────────────────
-
-    /// <summary>
-    /// Get market orders in a region, optionally filtered by type.
-    /// </summary>
     public Task<List<MarketOrder>?> GetOrdersAsync(long regionId, string orderType = "all", long? typeId = null, int page = 1, CancellationToken ct = default)
     {
-        var url = $"/markets/{regionId}/orders/?order_type={orderType}&page={page}";
+        var normalizedOrderType = orderType?.Trim().ToLowerInvariant();
+        if (normalizedOrderType is not ("buy" or "sell" or "all"))
+            throw new ArgumentException("orderType must be 'buy', 'sell' or 'all'.", nameof(orderType));
+        ArgumentOutOfRangeException.ThrowIfLessThan(page, 1);
+
+        var url = $"/markets/{regionId}/orders/?order_type={normalizedOrderType}&page={page}";
         if (typeId.HasValue)
             url += $"&type_id={typeId.Value}";
         return _client.GetAsync<List<MarketOrder>>(url, ct);
     }
 
-    // ── Market History ───────────────────────────────────
-
-    /// <summary>Get historical market statistics for a type in a region.</summary>
     public Task<List<MarketHistory>?> GetHistoryAsync(long regionId, long typeId, CancellationToken ct = default)
         => _client.GetAsync<List<MarketHistory>>($"/markets/{regionId}/history/?type_id={typeId}", ct);
 
-    // ── Market Groups ────────────────────────────────────
-
-    /// <summary>Get a list of market group IDs.</summary>
     public Task<List<long>?> GetMarketGroupsAsync(CancellationToken ct = default)
         => _client.GetAsync<List<long>>("/markets/groups/", ct);
 
-    /// <summary>Get details about a specific market group.</summary>
     public Task<MarketGroup?> GetMarketGroupAsync(long marketGroupId, CancellationToken ct = default)
         => _client.GetAsync<MarketGroup>($"/markets/groups/{marketGroupId}/", ct);
 
-    // ── Types in Region ──────────────────────────────────
-
-    /// <summary>Get a list of type IDs that have active orders in a region.</summary>
+    /// <summary>Type IDs that have active market orders in the region.</summary>
     public Task<List<long>?> GetTypesInRegionAsync(long regionId, int page = 1, CancellationToken ct = default)
-        => _client.GetAsync<List<long>>($"/markets/{regionId}/types/?page={page}", ct);
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(page, 1);
+        return _client.GetAsync<List<long>>($"/markets/{regionId}/types/?page={page}", ct);
+    }
 }

@@ -58,10 +58,28 @@ public class MarketToolsTests
     [Fact]
     public async Task GetMarketGroup_WhenNotFound_ReturnsMessage()
     {
-        _handler.Queue500();
+        _handler.Queue404();
 
         var result = await MarketTools.GetMarketGroup(_svc, 999999, CancellationToken.None);
 
         Assert.Equal("Market group not found.", result);
+    }
+
+    [Fact]
+    public async Task GetMarketOrders_InvalidOrderType_IsRejectedWithoutHttpCall()
+    {
+        var result = await MarketTools.GetMarketOrders(_svc, 10000002, "sell&page=99", null, 1, CancellationToken.None);
+
+        Assert.StartsWith("Invalid parameter", result);
+        Assert.Empty(_handler.Requests);
+    }
+
+    [Fact]
+    public async Task GetMarketOrders_InvalidPage_IsRejectedWithoutHttpCall()
+    {
+        var result = await MarketTools.GetMarketOrders(_svc, 10000002, "all", null, 0, CancellationToken.None);
+
+        Assert.StartsWith("Invalid parameter", result);
+        Assert.Empty(_handler.Requests);
     }
 }

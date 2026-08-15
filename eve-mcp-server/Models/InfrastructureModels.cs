@@ -2,10 +2,6 @@ using System.Text.Json.Serialization;
 
 namespace eve_mcp_server.Models;
 
-// ═══════════════════════════════════════════
-// Route, Industry, Sovereignty, Insurance
-// ═══════════════════════════════════════════
-
 public sealed class RouteResult
 {
     [JsonPropertyName("route")]
@@ -129,10 +125,6 @@ public sealed class SystemKills
     public long PodKills { get; set; }
 }
 
-// ═══════════════════════════════════════════
-// Dogma Models
-// ═══════════════════════════════════════════
-
 public sealed class DogmaAttributeDetail
 {
     [JsonPropertyName("attribute_id")]
@@ -213,10 +205,6 @@ public sealed class DogmaEffectDetail
     [JsonPropertyName("tracking_speed_attribute_id")]
     public long? TrackingSpeedAttributeId { get; set; }
 }
-
-// ═══════════════════════════════════════════
-// Loyalty Store Models
-// ═══════════════════════════════════════════
 
 public sealed class LoyaltyStoreOffer
 {

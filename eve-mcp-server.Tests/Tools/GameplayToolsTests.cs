@@ -26,13 +26,14 @@ public class GameplayToolsTests
     }
 
     [Fact]
-    public async Task GetServerStatus_WhenUnavailable_ReturnsMessage()
+    public async Task GetServerStatus_WhenEsiIsDown_ReturnsEsiErrorMessage()
     {
         _handler.Queue500();
 
         var result = await GameplayTools.GetServerStatus(_svc, CancellationToken.None);
 
-        Assert.Equal("Could not retrieve server status.", result);
+        Assert.StartsWith("ESI request failed", result);
+        Assert.Contains("500", result);
     }
 
     [Fact]
@@ -45,20 +46,31 @@ public class GameplayToolsTests
             solar_system_id = 30000142
         });
 
-        var result = await GameplayTools.GetKillmail(_svc, 12345, "abc123", CancellationToken.None);
+        var result = await GameplayTools.GetKillmail(_svc, 12345, ValidHash, CancellationToken.None);
 
         Assert.Contains("12345", result);
         Assert.Contains("30000142", result);
     }
 
+    private const string ValidHash = "a1b2c3d4e5f6a7b8c9d0a1b2c3d4e5f6a7b8c9d0";
+
     [Fact]
     public async Task GetKillmail_WhenNotFound_ReturnsMessage()
     {
-        _handler.Queue500();
+        _handler.Queue404();
 
-        var result = await GameplayTools.GetKillmail(_svc, 999, "invalid", CancellationToken.None);
+        var result = await GameplayTools.GetKillmail(_svc, 999, ValidHash, CancellationToken.None);
 
         Assert.Equal("Killmail not found.", result);
+    }
+
+    [Fact]
+    public async Task GetKillmail_InvalidHash_IsRejectedWithoutHttpCall()
+    {
+        var result = await GameplayTools.GetKillmail(_svc, 999, "../status/?x=", CancellationToken.None);
+
+        Assert.StartsWith("Invalid parameter", result);
+        Assert.Empty(_handler.Requests);
     }
 
     [Fact]

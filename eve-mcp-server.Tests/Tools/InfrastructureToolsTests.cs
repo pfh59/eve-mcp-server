@@ -29,7 +29,7 @@ public class InfrastructureToolsTests
     [Fact]
     public async Task GetRoute_WhenFails_ReturnsMessage()
     {
-        _handler.Queue500();
+        _handler.Queue404();
 
         var result = await InfrastructureTools.GetRoute(_svc, 1, 2, CancellationToken.None);
 
@@ -67,7 +67,7 @@ public class InfrastructureToolsTests
     [Fact]
     public async Task GetDogmaAttribute_WhenNotFound_ReturnsMessage()
     {
-        _handler.Queue500();
+        _handler.Queue404();
 
         var result = await InfrastructureTools.GetDogmaAttribute(_svc, 999999, CancellationToken.None);
 

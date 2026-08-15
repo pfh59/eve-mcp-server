@@ -1,4 +1,4 @@
-using eve_mcp_server.Infrastructure;
+using eve_mcp_server.Esi;
 using Microsoft.Extensions.Logging.Abstractions;
 
 namespace eve_mcp_server.Tests;
@@ -14,7 +14,7 @@ public static class TestEsiClientFactory
         var httpClient = new HttpClient(handler);
         var options = new EsiClientOptions
         {
-            BaseUrl = "https://esi.evetech.net/latest",
+            BaseUrl = "https://esi.evetech.net",
             UserAgent = "eve-mcp-server-tests/1.0.0",
             Datasource = "tranquility"
         };

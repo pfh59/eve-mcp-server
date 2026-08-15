@@ -2,10 +2,6 @@ using System.Text.Json.Serialization;
 
 namespace eve_mcp_server.Models;
 
-// ═══════════════════════════════════════════
-// Market Models
-// ═══════════════════════════════════════════
-
 public sealed class MarketGroup
 {
     [JsonPropertyName("market_group_id")]
